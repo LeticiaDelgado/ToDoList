@@ -35,6 +35,7 @@
     "vue-template-compiler": "^2.6.14"
   },
   "eslintConfig": {
+    "rules": {"vue/multi-word-component-names": "off"},
     "root": true,
     "env": {
       "node": true
@@ -47,8 +48,7 @@
     ],
     "parserOptions": {
       "ecmaVersion": 2020
-    },
-    "rules": {}
+    }
   },
   "browserslist": [
     "> 1%",

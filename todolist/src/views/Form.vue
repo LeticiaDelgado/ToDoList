@@ -1,5 +1,73 @@
 <template>
-  <div>
-    <h1>Form</h1>
+  <div class="container mt-2">
+    <b-form>
+      <b-form-group label="Título" label-for="subject">
+        <b-form-input
+          id="subject"
+          v-model="form.subject"
+          type="text"
+          placeholder="Ex: lavar carro"
+          required
+          autocomplete="off"
+        ></b-form-input>
+      </b-form-group>
+      <b-form-group label="Descrição" label-for="description">
+        <b-form-textarea
+          id="description"
+          v-model="form.description"
+          type="text"
+          placeholder="Ex: preciso levar o carro para lavar"
+          required
+          autocomplete="off"
+        ></b-form-textarea>
+      </b-form-group>
+      <b-button type="submit" variant="outline-primary" @click="saveTask">
+        Salvar
+      </b-button>
+    </b-form>
   </div>
 </template>
+
+<script lang="ts">
+
+import ToasMixin from "@/mixins/toastmixins.js";
+export default {
+  name: "Form",
+  mixins: [ToasMixin],
+  data() {
+    return {
+      form: {
+        subject: "",
+        description: "",
+      },
+      methodSave: "new",
+    };
+  },
+
+  created() {
+    if(this.$route.params.index === 0 || this.$route.params.index !== undefined){
+      this.methodSave = "update";
+      let tasks = JSON.parse(localStorage.getItem("tasks"));
+      this.form = tasks[this.$route.params.index];
+    }
+  },
+
+  methods: {
+    saveTask(): void {
+      if(this.methodSave === "update") {
+        let tasks = JSON.parse(localStorage.getItem("tasks"));
+        tasks[this.$route.params.index] = this.form;
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        this.showToast("success", "Sucesso!", "Tarefa atualizada com sucesso!");
+        this.$router.push({ name: "list" });
+        return;
+      }
+      let tasks = localStorage.getItem("tasks") ? JSON.parse(localStorage.getItem("tasks")) : [];
+      tasks.push(this.form);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      this.showToast("success", "Sucesso!", "Tarefa criada com sucesso!");
+      this.$router.push({ name: "list" });
+    },
+  },
+};
+</script>
